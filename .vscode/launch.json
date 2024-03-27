@@ -1,0 +1,55 @@
+{
+    // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
+    // 기존 특성에 대한 설명을 보려면 가리킵니다.
+    // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "msl",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./main.py",
+            "console": "integratedTerminal",
+            "args":["--anormly_ratio", "1", "--num_epochs", "3", 
+            "--batch_size", "256",
+            "--mode", "train" ,
+            "--dataset", "MSL",
+            "--data_path", "dataset/MSL",
+            "--input_c", "55" ,
+            "--output_c", "55"
+            ]
+        },
+        {
+            "name": "vitaldb",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./main.py",
+            "console": "integratedTerminal",
+            "args":["--anormly_ratio", "1", "--num_epochs", "40", 
+            "--batch_size", "256",
+            "--mode", "train" ,
+            "--dataset", "vitaldb",
+            "--data_path", "dataset/MSL",
+            "--input_c", "4" ,
+            "--output_c", "4",
+            "--win_size", "100"
+            ]
+        },
+        {
+            "name": "vitaldb_test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./main.py",
+            "console": "integratedTerminal",
+            "args":["--anormly_ratio", "1", "--num_epochs", "20", 
+            "--batch_size", "256",
+            "--mode", "test" ,
+            "--dataset", "vitaldb",
+            "--data_path", "dataset/MSL",
+            "--input_c", "4" ,
+            "--output_c", "4",
+            "--win_size", "100"
+            ]
+        }
+    ]
+}

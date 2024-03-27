@@ -7,7 +7,7 @@ import time
 from utils.utils import *
 from model.AnomalyTransformer import AnomalyTransformer
 from data_factory.data_loader import get_loader_segment
-
+from sklearn.metrics import roc_auc_score
 
 def my_kl_loss(p, q):
     res = p * (torch.log(p + 0.0001) - torch.log(q + 0.0001))
@@ -43,11 +43,11 @@ class EarlyStopping:
             self.best_score = score
             self.best_score2 = score2
             self.save_checkpoint(val_loss, val_loss2, model, path)
-        elif score < self.best_score + self.delta or score2 < self.best_score2 + self.delta:
-            self.counter += 1
-            print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
-            if self.counter >= self.patience:
-                self.early_stop = True
+        # elif score < self.best_score + self.delta or score2 < self.best_score2 + self.delta:
+        #     self.counter += 1
+        #     print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+        #     if self.counter >= self.patience:
+        #         self.early_stop = True
         else:
             self.best_score = score
             self.best_score2 = score2
@@ -291,6 +291,7 @@ class Solver(object):
         # (3) evaluation on the test set
         test_labels = []
         attens_energy = []
+        out = nn.Sigmoid()
         for i, (input_data, labels) in enumerate(self.thre_loader):
             input = input_data.float().to(self.device)
             output, series, prior, _ = self.model(input)
@@ -328,48 +329,19 @@ class Solver(object):
         test_energy = np.array(attens_energy)
         test_labels = np.array(test_labels)
 
-        pred = (test_energy > thresh).astype(int)
 
+        # 넘파이 배열을 100개씩 나누어 2차원 배열로 변환
+        arr_reshaped = test_energy.reshape(-1, 100)
+
+        # 각 행의 평균을 계산하여 새로운 배열 생성
+        pred = np.mean(arr_reshaped, axis=1)
         gt = test_labels.astype(int)
 
         print("pred:   ", pred.shape)
         print("gt:     ", gt.shape)
-
-        # detection adjustment: please see this issue for more information https://github.com/thuml/Anomaly-Transformer/issues/14
-        anomaly_state = False
-        for i in range(len(gt)):
-            if gt[i] == 1 and pred[i] == 1 and not anomaly_state:
-                anomaly_state = True
-                for j in range(i, 0, -1):
-                    if gt[j] == 0:
-                        break
-                    else:
-                        if pred[j] == 0:
-                            pred[j] = 1
-                for j in range(i, len(gt)):
-                    if gt[j] == 0:
-                        break
-                    else:
-                        if pred[j] == 0:
-                            pred[j] = 1
-            elif gt[i] == 0:
-                anomaly_state = False
-            if anomaly_state:
-                pred[i] = 1
-
-        pred = np.array(pred)
-        gt = np.array(gt)
-        print("pred: ", pred.shape)
-        print("gt:   ", gt.shape)
-
-        from sklearn.metrics import precision_recall_fscore_support
-        from sklearn.metrics import accuracy_score
-        accuracy = accuracy_score(gt, pred)
-        precision, recall, f_score, support = precision_recall_fscore_support(gt, pred,
-                                                                              average='binary')
+        auc = roc_auc_score ( gt, pred )
         print(
-            "Accuracy : {:0.4f}, Precision : {:0.4f}, Recall : {:0.4f}, F-score : {:0.4f} ".format(
-                accuracy, precision,
-                recall, f_score))
+            "auc : {:0.4f}".format(
+                auc,))
 
-        return accuracy, precision, recall, f_score
+        return auc, 0, 0, 0

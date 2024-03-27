@@ -127,3 +127,23 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+checkpoints/MSL_checkpoint.pth
+checkpoints/vitaldb_checkpoint.pth
+dataset/MSL/.DS_Store
+dataset/MSL/MSL_test_label.npy
+dataset/MSL/MSL_test.npy
+dataset/MSL/MSL_train.npy
+dataset/PSM/test_label.csv
+dataset/PSM/test.csv
+dataset/PSM/train.csv
+dataset/SMAP/SMAP_test_label.npy
+dataset/SMAP/SMAP_test.npy
+dataset/SMAP/SMAP_train.npy
+dataset/SMD/SMD_test_label.npy
+dataset/SMD/SMD_test_label.pkl
+dataset/SMD/SMD_test.npy
+dataset/SMD/SMD_test.pkl
+dataset/SMD/SMD_train.npy
+dataset/SMD/SMD_train.pkl
+scripts/MSL.sh
+Untitled.ipynb

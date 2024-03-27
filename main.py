@@ -16,7 +16,7 @@ def main(config):
     if (not os.path.exists(config.model_save_path)):
         mkdir(config.model_save_path)
     solver = Solver(vars(config))
-
+    # solver.test()
     if config.mode == 'train':
         solver.train()
     elif config.mode == 'test':
@@ -28,7 +28,7 @@ def main(config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--lr', type=float, default=1e-4)
+    parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--num_epochs', type=int, default=10)
     parser.add_argument('--k', type=int, default=3)
     parser.add_argument('--win_size', type=int, default=100)
